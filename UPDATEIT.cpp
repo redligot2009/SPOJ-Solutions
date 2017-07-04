@@ -1,10 +1,7 @@
 #include <bits/stdc++.h>
 using namespace std;
 
-//Seg Tree Implementation w/ Lazy Propagation
-
-int N, M;
-long W;
+//Solved using Segment Tree w/ Lazy Propagation
 
 struct tree
 {
@@ -45,7 +42,7 @@ struct tree
 		return left->query(I,J) + right->query(I,J);
 	}
 	
-	void update(int I, int J)
+	void update(int I, int J, int v)
 	{
 		propagate();
 		if(I > j || J < i)
@@ -54,16 +51,16 @@ struct tree
 		}
 		if(i >= I && j <= J)
 		{
-			val += (j-i+1);
+			val += (j-i+1) * v;
 			if(i != j)
 			{
-				left->lazy ++;
-				right->lazy ++;
+				left->lazy += v;
+				right->lazy += v;
 			}
 			return;
 		}
-		left->update(I,J);
-		right->update(I,J);
+		left->update(I,J, v);
+		right->update(I,J, v);
 		val = left->val + right->val;
 	}
 };
@@ -92,19 +89,27 @@ int main() {
 	// your code goes here
 	ios_base::sync_with_stdio(0);
 	cin.tie(0);
-	cin >> N >> M >> W;
-	root = construct(0,W-1);
-	while(N--)
+	int T;
+	cin >> T;
+	while(T--)
 	{
-		int i, j;
-		cin >> i >> j;
-		root->update(i,j);
-	}
-	while(M--)
-	{
-		int i;
-		cin >> i;
-		cout << root->query(i,i) << endl;
+		int N, U;
+		cin >> N >> U;
+		root = construct(0,N-1);
+		while(U--)
+		{
+			int i, j, v;
+			cin >> i >> j >> v;
+			root->update(i,j,v);
+		}
+		int Q;
+		cin >> Q;
+		while(Q--)
+		{
+			int i;
+			cin >> i;
+			cout << root->query(i,i) << endl;
+		}
 	}
 	return 0;
 }
